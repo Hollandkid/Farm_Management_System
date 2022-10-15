@@ -1,0 +1,68 @@
+﻿@model FarmViewModel
+
+@{
+    ViewData["Title"] = "Farms";
+
+
+    var formatter = new System.Globalization.CultureInfo("HA-LATN-NG");
+    formatter.NumberFormat.CurrencySymbol = "₦";
+}
+<!-- Start Categories  -->
+<div class="categories-shop">
+    <div class="container">
+        <div class="row">
+
+            @foreach (var farm in Model.Farms)
+            {
+
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="shop-cat-box">
+                        <img class="img-fluid" src="~/@farm.Image" alt="" />
+                        <a class="btn hvr-hover" href="#">@farm.Name</a>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!-- End Categories -->
+
+
+
+<div class="row my-5">
+    <div class="col-lg-12">
+        <div class="title-all text-center">
+            <h1>Farm Products</h1>
+        </div>
+        <div class="featured-products-box owl-carousel owl-theme">
+
+
+            @foreach (var productz in Model.Products)
+            {
+                <div class="item">
+                    <div class="products-single fix">
+                        <div class="box-img-hover">
+                            <img src="~/@productz.Image" width="100%" style="max-height:200px; min-height:200px" class="img-fluid" alt="Image">
+                            <div class="mask-icon">
+                                <ul>
+                                    <li><a asp-action="ProductDetails" asp-controller="Home" asp-route-Id="@productz.Id" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
+
+                                </ul>
+                                <form asp-action="ProductDetails" method="post" enctype="multipart/form-data">
+                                    <a class="cart btn hvr-hover"><input type="submit" value="Add to Cart" class="btn" /></a>
+                                </form>
+                                @*<a class="cart" asp-action="ProductDetails" asp-controller="Home" asp-area="Customer" method="post" asp-route-Id="@Model.Product.Id">Add to Cart</a>*@
+                            </div>
+                        </div>
+                        <div class="why-text">
+                            <h4>@productz.Name</h4>
+                            <h5> @productz.Price.ToString("C3", formatter)</h5>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,193 @@
+﻿@model ProductViewModel
+
+
+@using X.PagedList.Mvc.Core;
+@using Ocha_Farm_Management_System.Utility
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+@{
+    ViewData["Title"] = "Home Page";
+
+    List<Category> cat;
+    cat = Model.ProductTypes;
+    if(cat == null)
+    {
+        cat =new List<Category>();
+    }
+    else
+    {
+        ViewData["categories"] = cat;
+
+    }
+    List<Product> productModels = HttpContextAccessor.HttpContext.Session.Get<List<Product>>("productModel");
+    Product product = null;
+    if (productModels != null)
+    {
+        product = productModels.FirstOrDefault(c => c.Id == Model.Products.First().Id);
+    }
+
+    var formatter = new System.Globalization.CultureInfo("HA-LATN-NG");
+    formatter.NumberFormat.CurrencySymbol = "₦";
+
+}
+<!-- Start Slider -->
+<div id="slides-shop" class="cover-slides">
+    <ul class="slides-container">
+        <li class="text-center">
+            <img src="~/images/banner-01.jpg" alt="">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="m-b-20"><strong>Welcome To <br> Ocha E-Farm</strong></h1>
+                        <p class="m-b-40">Farm Products with you in realtime and view <br> Bringing our Farm in the comfort of your space.</p>
+                        <p><a class="btn hvr-hover" href="#">Shop New</a></p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="text-center">
+            <img src="~/images/banner-02.jpg" alt="">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="m-b-20"><strong>Welcome To <br> Ocha E-Farm</strong></h1>
+                        <p class="m-b-40">Farm Products with you in realtime and view <br> Bringing our Farm in the comfort of your space.</p>
+                        <p><a class="btn hvr-hover" href="#">Shop New</a></p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="text-center">
+            <img src="~/images/banner-03.jpg" alt="">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="m-b-20"><strong>Welcome To <br> Ocha E-Farm</strong></h1>
+                        <p class="m-b-40">Farm Products with you in realtime and view <br> Bringing our Farm in the comfort of your space.</p>
+                        <p><a class="btn hvr-hover" href="#">Shop New</a></p>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <div class="slides-navigation">
+        <a href="#" class="next"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+        <a href="#" class="prev"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+    </div>
+</div>
+<!-- End Slider -->
+<!-- Start Categories  -->
+<div class="categories-shop">
+    <div class="container">
+        <div class="row">
+            @foreach (var productType in Model.ProductTypes)
+            {
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="shop-cat-box">
+                        <img class="img-fluid" src="~/images/categories_img_01.jpg" alt="" />
+                        <a class="btn hvr-hover" href="#">@productType.Categories</a>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Start Products  -->
+<div class="products-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="title-all text-center">
+                    <h1>Fruits & Vegetables</h1>
+                    <p>Fresh and healthy from different farms and farmers</p>
+                </div>
+            </div>
+        </div>
+        @*<div class="row">
+                <div class="col-lg-12">
+                    <div class="special-menu text-center">
+                        <div class="button-group filter-button-group">
+                            <button class="active" data-filter="*">All</button>
+                            <button data-filter=".top-featured">Top featured</button>
+                            <button data-filter=".best-seller">Best seller</button>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+        <div class="row special-list">
+
+            @foreach (var productz in Model.Products)
+            {
+                <div class="col-lg-3 col-md-6 special-grid best-seller">
+                    <div class="products-single fix">
+                        <div class="box-img-hover">
+                            <div class="type-lb">
+                                <p class="sale">@productz.Categories.Categories</p>
+                            </div>
+                            <img src="~/@productz.Image" width="100%" style="max-height:200px; min-height:200px" class="img-fluid" alt="@productz.Name">
+                            <div class="mask-icon">
+                                <ul>
+                                    <li><a asp-action="ProductDetails" asp-controller="Home" asp-route-Id="@productz.Id" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
+                                    @*<li><a href="#" data-toggle="tooltip" data-placement="right" title="Compare"><i class="fas fa-sync-alt"></i></a></li>*@
+                                </ul>
+                                <form asp-route-use="@productz.Id" asp-action="ProductAdd" method="post" enctype="multipart/form-data">
+                                    <a class="cart btn hvr-hover"><input type="submit" value="Add to Cart" class="cart btn hvr-hover" /></a>
+                                </form>
+                               
+                            </div>
+                        </div>
+                        <div class="why-text">
+                            <h4>@productz.Name</h4>
+                            <h5>@productz.Price.ToString("C3", formatter)</h5>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+        </div>
+
+        <div class="text-page">
+
+            @{
+
+                <p>
+                    Page @(Model.Products.PageCount < Model.Products.PageNumber ? 0 : Model.Products.PageNumber) of @Model.Products.PageCount
+                </p>
+                <p>
+                    @Html.PagedListPager(Model.Products, c => Href("~/Customer/Home/Index?page=" + c), X.PagedList.Web.Common.PagedListRenderOptions.PageNumbersOnly)
+                </p>
+
+                //Html.PagedListPager(Model.Products, page => Url.Action("Index" + page, X.PagedList.Web.Common.PagedListRenderOptions.PageNumbersOnly))
+
+            }
+
+        </div>
+    </div>
+</div>
+<!-- End Products  -->
+<!-- End Categories -->
+@* CHANGE THE PICTURES *@
+<div class="box-add-products">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="offer-box-products">
+                    <img class="img-fluid" src="~/images/blog-img.jpg" alt="" />
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="offer-box-products">
+                    <img class="img-fluid" src="~/images/blog-img-02.jpg" alt="" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
